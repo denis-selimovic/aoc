@@ -1,3 +1,5 @@
+use std::fs;
+
 use reqwest::blocking::Client;
 use reqwest::header::COOKIE;
 use reqwest::StatusCode;
@@ -16,12 +18,25 @@ impl Reader {
 
     pub fn load_puzzle(&self) -> String {
         let config = Config::new();
-        let url = &format!("{}/{}/day/{}/input", config.base_url, self.year, self.day);
+        let cache_dir = config.cache_dir.join(self.year.to_string());
+        let cache_path = cache_dir.join(format!("{}.txt", self.day));
+        
+        if cache_path.exists() && cache_path.is_file() {
+            match fs::read_to_string(&cache_path) {
+                Ok(content) => {
+                    println!("Returning data from cache {}", cache_path.to_str().unwrap());
 
+                    return content;
+                },
+                Err(err) => println!("Error {} while reading cached version of puzzle in file {}", err, cache_path.to_str().unwrap()),
+            }
+        }
+
+        let url = &format!("{}/{}/day/{}/input", config.base_url, self.year, self.day);
         let client = Client::new();
         let cookie = format!("session={}", config.session);
         
-        match client.get(url).header(COOKIE, cookie).send() {
+        let content = match client.get(url).header(COOKIE, cookie).send() {
             Ok(resp) => {
                 match resp.status() {
                     StatusCode::OK => {
@@ -34,7 +49,19 @@ impl Reader {
                 }
             },
             Err(err) => panic!("Unable to load puzzle with url {}. Error {} occured!\n", url, err),
+        };
+
+        match fs::create_dir_all(&cache_dir) {
+            Ok(_) => println!("Sucessfully crated cache dir {}", cache_dir.to_str().unwrap()),
+            Err(err) => panic!("Couldn't create cache dir {} with err {}", cache_dir.to_str().unwrap(), err),
         }
+
+        match fs::write(&cache_path, &content) {
+            Ok(_) => println!("Succesfully created cache file {}", cache_path.to_str().unwrap()),
+            Err(err) => panic!("Couldn't create cache file {} with err {}", cache_path.to_str().unwrap(), err),
+        }
+
+        content
     }
 
     pub fn split_vertically(&self, content: &String, delimiter: &str, total: usize) -> Vec<Vec<String>> {
