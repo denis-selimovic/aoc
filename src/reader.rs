@@ -64,6 +64,23 @@ impl Reader {
         content
     }
 
+    pub fn split(&self, content: &String, delimiter: &str) -> Vec<Vec<String>> {
+        let mut result = Vec::new();
+
+        for line in content.lines() {
+            let mut row = Vec::new();
+            let parts: Vec<&str> = line.split(delimiter).collect();
+
+            for part in parts.iter() {
+                row.push(part.to_string());
+            }
+
+            result.push(row);
+        }
+
+        result
+    }
+
     pub fn split_vertically(&self, content: &String, delimiter: &str, total: usize) -> Vec<Vec<String>> {
         let mut result = Vec::with_capacity(total);
 
