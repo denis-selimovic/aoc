@@ -3,6 +3,7 @@ use std::collections::HashMap;
 
 use crate::aoc_2024::day_01;
 use crate::aoc_2024::day_02;
+use crate::aoc_2024::day_03;
 
 
 pub trait Plugin {
@@ -18,6 +19,7 @@ impl PluginManager {
         let mut map: HashMap<(u8, u16), Box<dyn Plugin>> = HashMap::new();
         map.insert((1 as u8, 2024 as u16), Box::new(day_01::AoC2024Day01));
         map.insert((2 as u8, 2024 as u16), Box::new(day_02::AoC2024Day02));
+        map.insert((3 as u8, 2024 as u16), Box::new(day_03::AoC2024Day03));
 
         Self { map }
     }
