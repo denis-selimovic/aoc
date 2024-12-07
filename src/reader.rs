@@ -64,6 +64,22 @@ impl Reader {
         content
     }
 
+    pub fn to_grid(&self, content: &String) -> Vec<Vec<String>> {
+        let mut result = Vec::new();
+
+        for line in content.lines() {
+            let mut row = Vec::new();
+
+            for ch in line.chars() {
+                row.push(ch.to_string());
+            }
+
+            result.push(row);
+        }
+
+        result
+    }
+
     pub fn split(&self, content: &String, delimiter: &str) -> Vec<Vec<String>> {
         let mut result = Vec::new();
 
