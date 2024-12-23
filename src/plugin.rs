@@ -23,6 +23,7 @@ use crate::aoc_2024::day_19;
 use crate::aoc_2024::day_20;
 use crate::aoc_2024::day_21;
 use crate::aoc_2024::day_22;
+use crate::aoc_2024::day_23;
 
 
 pub trait Plugin {
@@ -58,6 +59,7 @@ impl PluginManager {
         map.insert((20 as u8, 2024 as u16), Box::new(day_20::AoC2024Day20));
         map.insert((21 as u8, 2024 as u16), Box::new(day_21::AoC2024Day21));
         map.insert((22 as u8, 2024 as u16), Box::new(day_22::AoC2024Day22));
+        map.insert((23 as u8, 2024 as u16), Box::new(day_23::AoC2024Day23));
 
         Self { map }
     }
